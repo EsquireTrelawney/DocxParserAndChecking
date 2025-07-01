@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DocxNormControl - Проверка форматирования</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='img/favicon.ico') }}" type="image/x-icon">
+</head>
+<body>
+    <div class="theme-toggle" title="Переключить тему">
+        <!-- Иконка будет добавлена через JavaScript -->
+    </div>
+
+    <div class="container">
+        <h1>Проверка документа на соответствие требованиям</h1>
+        
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div class="alert alert-error">
+            {% for message in messages %}
+            <p>{{ message }}</p>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+        
+        <div class="upload-section">
+            <form action="{{ url_for('upload') }}" method="POST" enctype="multipart/form-data">
+                <div class="file-input">
+                    <label for="docx_file">Выберите документ:</label>
+                    <div class="file-input-wrapper">
+                        <button type="button" class="file-input-button">Выбрать файл DOCX</button>
+                        <input type="file" id="docx_file" name="docx_file" accept=".docx" required>
+                    </div>
+                </div>
+                
+                <div class="options">
+                    <h2>Параметры проверки</h2>
+                    
+                    <div class="option-row">
+                        <label for="author">Автор комментариев:</label>
+                        <input type="text" id="author" name="author" value="Norm Control">
+                    </div>
+                    
+                    <div class="option-row">
+                        <label for="output_prefix">Префикс выходного файла:</label>
+                        <input type="text" id="output_prefix" name="output_prefix" value="_with_remarks">
+                    </div>
+                </div>
+                
+                <button type="submit" class="check-button" disabled>Проверить документ</button>
+            </form>
+        </div>
+        
+        <div class="info-section">
+            <h2>О сервисе</h2>
+            <p>DocxNormControl проверяет документы Word на соответствие требованиям форматирования и добавляет комментарии к найденным несоответствиям.</p>
+            <p>Поддерживаемые проверки:</p>
+            <ul>
+                <li>Форматирование заголовков разделов</li>
+                <li>Форматирование подзаголовков</li>
+                <li>Форматирование списков</li>
+                <li>Подписи к рисункам и таблицам</li>
+                <li>Форматирование текста и абзацев</li>
+            </ul>
+        </div>
+        
+        <footer class="footer">
+            <p>DocxNormControl - Сервис проверки форматирования документов</p>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html> 

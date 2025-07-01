@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Результат проверки - DocxNormControl</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='img/favicon.ico') }}" type="image/x-icon">
+</head>
+<body>
+    <div class="theme-toggle" title="Переключить тему">
+        <!-- Иконка будет добавлена через JavaScript -->
+    </div>
+
+    <div class="container">
+        <h1>Результаты проверки документа</h1>
+        
+        <div class="result-section">
+            {% if no_comments %}
+                <div class="success-message">
+                    <h2>Поздравляем!</h2>
+                    <p>Документ полностью соответствует требованиям форматирования.</p>
+                    <img src="{{ url_for('static', filename='img/success.svg') }}" alt="Успешно" class="result-icon">
+                </div>
+            {% else %}
+                <div class="warning-message">
+                    <h2>Найдены несоответствия</h2>
+                    <p>В документе обнаружено {{ comment_count }} {{ 'замечание' if comment_count == 1 else 'замечаний' if comment_count > 4 else 'замечания' }}.</p>
+                    <p>Документ с комментариями готов к скачиванию.</p>
+                </div>
+                
+                <div class="download-section">
+                    <a href="{{ url_for('download', filename=filename) }}" class="download-button">
+                        Скачать обработанный документ
+                    </a>
+                </div>
+                
+                <div class="result-details">
+                    <h3>Статистика проверки</h3>
+                    <div class="stats-container">
+                        <div class="stat-card">
+                            <div class="stat-value">{{ comment_count }}</div>
+                            <div class="stat-label">Всего замечаний</div>
+                        </div>
+                        
+                        {% if document_stats %}
+                        <div class="stat-card">
+                            <div class="stat-value">{{ document_stats.pages }}</div>
+                            <div class="stat-label">Страниц</div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-value">{{ document_stats.paragraphs }}</div>
+                            <div class="stat-label">Абзацев</div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="actions">
+            <a href="{{ url_for('index') }}" class="back-button">Проверить другой документ</a>
+        </div>
+        
+        <footer class="footer">
+            <p>DocxNormControl - Сервис проверки форматирования документов</p>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html> 

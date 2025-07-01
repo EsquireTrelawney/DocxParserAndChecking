@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Диагностика - DocxNormControl</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <style>
+        pre {
+            background-color: #f5f5f5;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        .diagnostic-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .status-ok {
+            color: green;
+        }
+        .status-error {
+            color: red;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Диагностика работы приложения</h1>
+        
+        <div class="diagnostic-section">
+            <h2>Информация о системе</h2>
+            <table>
+                <tr>
+                    <th>Параметр</th>
+                    <th>Значение</th>
+                </tr>
+                <tr>
+                    <td>Рабочая директория</td>
+                    <td>{{ system_info.working_directory }}</td>
+                </tr>
+                <tr>
+                    <td>Директория uploads</td>
+                    <td>{{ system_info.upload_folder }}</td>
+                </tr>
+                <tr>
+                    <td>Python версия</td>
+                    <td>{{ system_info.python_version }}</td>
+                </tr>
+                <tr>
+                    <td>Flask версия</td>
+                    <td>{{ system_info.flask_version }}</td>
+                </tr>
+            </table>
+        </div>
+        
+        <div class="diagnostic-section">
+            <h2>Проверка директории загрузок</h2>
+            <ul>
+                <li>Директория существует: 
+                    <span class="{{ 'status-ok' if upload_check.exists else 'status-error' }}">
+                        {{ 'Да' if upload_check.exists else 'Нет' }}
+                    </span>
+                </li>
+                <li>Права на запись: 
+                    <span class="{{ 'status-ok' if upload_check.writable else 'status-error' }}">
+                        {{ 'Да' if upload_check.writable else 'Нет' }}
+                    </span>
+                </li>
+                <li>Количество файлов: {{ upload_check.file_count }}</li>
+            </ul>
+            
+            {% if upload_check.files %}
+            <h3>Существующие файлы:</h3>
+            <table>
+                <tr>
+                    <th>Имя файла</th>
+                    <th>Размер (КБ)</th>
+                    <th>Дата изменения</th>
+                </tr>
+                {% for file in upload_check.files %}
+                <tr>
+                    <td>{{ file.name }}</td>
+                    <td>{{ file.size }}</td>
+                    <td>{{ file.modified }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+            {% endif %}
+        </div>
+        
+        <div class="diagnostic-section">
+            <h2>Проверка модулей</h2>
+            <ul>
+                {% for module in modules_check %}
+                <li>{{ module.name }}: 
+                    <span class="{{ 'status-ok' if module.exists else 'status-error' }}">
+                        {{ 'Найден' if module.exists else 'Не найден' }}
+                    </span>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        
+        <div class="actions">
+            <a href="{{ url_for('index') }}" class="back-button">Вернуться на главную</a>
+        </div>
+        
+        <footer class="footer">
+            <p>DocxNormControl - Сервис проверки форматирования документов</p>
+        </footer>
+    </div>
+</body>
+</html> 
